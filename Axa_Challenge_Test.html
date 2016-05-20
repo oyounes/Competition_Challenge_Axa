@@ -1,0 +1,361 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>AXA challenge Test - Prediction level of fire risk</title>
+
+		<script type="text/javascript" src="../d3/d3.v3.js"></script>
+		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+		<script src="http://d3js.org/d3.v3.min.js"></script>
+		<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+
+		<style>
+
+			body {
+			  background-color: #ccc;
+			  font-family: 'Open Sans', sans-serif;
+			}
+
+			svg {
+			  background-color: #fff;   
+			}
+
+			
+			circle {
+				fill: #fff;
+				-webkit-transition: width 2s; /* For Safari 3.1 to 6.0 */
+				transition: width 2s;
+			}
+
+			circle.parent {
+				fill: #fff;
+				fill-opacity: ;
+				stroke: #fff;
+			}
+
+			circle.parent:hover {
+				stroke-width: .5px;
+			}
+
+
+			circle.child {
+				fill: #ccc;
+				stroke: #999;
+			}
+
+			circle.child:hover {
+				 fill: #fff;
+				 cursor: pointer;
+			}
+        	
+        	.d3-tip {
+				line-height: 1;
+				font-weight: bold;
+				padding: 5px;
+				background: rgba(0, 0, 0, 0.8);
+				color: #fff;
+				border-radius: 2px;
+				transition: opacity 0.3s;   
+			
+			}
+        	.d3-tip:after {
+				box-sizing: border-box;
+				display: inline;
+				width: 100%;
+				line-height: 1;
+				color: rgba(0, 0, 0, 0.8);
+				content: "\25BC";
+				position: absolute;
+				text-align: center;
+			}
+			
+			.d3-tip.n:after {
+				margin: -1px 0 0 0;
+				top: 100%;
+				left: 0;
+			}
+        	
+        	text {
+				/*font-size: 7px;*/ 
+				font-weight: 700;
+				pointer-events: none;
+			}
+
+			text.parent {
+				fill: #222;
+				/*font-size: 15px;*/
+				background: #ccc;
+			}
+		</style>
+	</head>
+
+
+	<body>
+
+
+		<h2 align="center">Prediction level of fire risk in London</h2>
+		<p align="center"><u><b>Candidate:</b></u> <a href="https://www.linkedin.com/in/younesouassini"><img src="https://static.licdn.com/sc/h/3m4lyvbs6efg8pyhv7kupo6dh" alt="LinkedIn logo" style="width:20;"></a> Younes Ouassini </p>
+		<div align="center"><a href="http://www.axa.co.uk/home.aspx"><img src="http://www.axa.co.uk/apple-icon-120x120.png" alt="Axa logo"></a></div>
+		<p align="center">This page presents the results of the challenging test proposed by <b>AXA</b> as part of the application process for this <a href="https://gs6.globalsuccessor.com/fe/tpl_axa01.asp?s=4A515F4E5A565B1A&jobid=77510,4812614836&key=77541529&c=253645252276&pagestamp=semteqczstqvzqybyh.">Data Science postion</a>. </p>
+		<p align="center">In this challenge, <b>AXA</b> is providing data from <b>London fire brigade</b> records between <b>2012</b> and <b>2015</b>. The challenge is to predict the level of fire risk per area and property in London. </p>
+		<p align="center">The data between <b>2012</b> and <b>2014</b> has been used as a training set in order to create the model for the predictions. The data for <b>2015</b> has been used as a test set. A script in <b>R</b> using <b>SVM</b> (Support Vector Machine) algorithm has been used to generate the results. This page has been implemented in <b>D3.js</b> (Data-driven document). <b>Mircosoft Excel</b> and <b>AWK</b> scripts were used for cleaning and pre-processing the data.</p>
+		<p align="center">Each circle represents an area or a property. Their size represent the number of fires that happened between <b>2012</b> and <b>2015</b> by area or property. Hover your mouse over the circles to see the prediction level of fire risk obtained and more details.</p>
+
+		<div class="control-group" align="center"><u><b>Results:</b></u> 
+			<button onclick="showPackLayout(data_borough)">By Area</button>
+			<button onclick="showPackLayout(data_property)">By Property</button>
+		</div>
+		<div id="Pack" align="center"></div>
+		
+
+		<script type="text/javascript">
+
+			var data_borough = {
+							 "name": "",
+							 "children": [
+							  {
+								 "name": "London",
+								 "size": 77172,
+								 "children": [
+								  {"name": "Barking and Dagenham", "size": 2456, "pred": 67.14876, "incident": 7539},
+								  {"name": "Barnet", "size": 2530, "pred": 77.09497, "incident": 11881},
+								  {"name": "Bexley", "size": 2087, "pred": 63.88889, "incident": 7183},
+								  {"name": "Brent", "size": 2384, "pred": 74.87897, "incident": 10708},
+								  {"name": "Bromley", "size": 2909, "pred": 67.82129, "incident": 10797},
+								  {"name": "Camden", "size": 2421, "pred": 86.04651, "incident": 19299},
+								  {"name": "City of London", "size": 358, "pred": 91.76755, "incident": 4425},
+								  {"name": "Croydon", "size": 3277, "pred": 74.32612, "incident": 13479},
+								  {"name": "Ealing", "size": 2653, "pred": 76.04878, "incident": 12194},
+								  {"name": "Enfield", "size": 2891, "pred": 73.26884, "incident": 11500},
+								  {"name": "Greenwich", "size": 2792, "pred": 72.28601, "incident": 10755},
+								  {"name": "Hackney", "size": 2603, "pred": 81.69505, "incident": 14973},
+								  {"name": "Hammersmith and Fulham", "size": 1458, "pred": 84.56892, "incident": 10395},
+								  {"name": "Haringey", "size": 2171, "pred": 73.7632, "incident": 9827},
+								  {"name": "Harrow", "size": 1315, "pred": 78.36625, "incident": 6809},
+								  {"name": "Havering", "size": 2202, "pred": 68.82696, "incident": 8028},
+								  {"name": "Hillingdon", "size": 3041, "pred": 70.57664, "incident": 12535},
+								  {"name": "Hounslow", "size": 2425, "pred": 68.9572, "incident": 9165},
+								  {"name": "Islington", "size": 2064, "pred": 80.9568, "incident": 12170},
+								  {"name": "Kensington and Chelsea", "size": 1197, "pred": 88.49329, "incident": 11599},
+								  {"name": "Kingston upon Thames", "size": 1070, "pred": 80.20833, "incident": 5464},
+								  {"name": "Lambeth", "size": 2929, "pred": 80.88889, "incident": 16035},
+								  {"name": "Lewisham", "size": 2527, "pred": 78.28092, "incident": 13081},
+								  {"name": "Merton", "size": 1511, "pred": 73.53982, "incident": 6240},
+								  {"name": "Newham", "size": 3216, "pred": 73.70775, "incident": 12085},
+								  {"name": "Redbridge", "size": 2148, "pred": 72.36246, "incident": 8486},
+								  {"name": "Richmond upon Thames", "size": 1129, "pred": 80.42475, "incident": 6024},
+								  {"name": "Southwark", "size": 3432, "pred": 77.92295, "incident": 17492},
+								  {"name": "Sutton", "size": 1594, "pred": 74.70641, "incident": 6181},
+								  {"name": "Tower Hamlets", "size": 3941, "pred": 79.40972, "incident": 16941},
+								  {"name": "Waltham Forest", "size": 2383, "pred": 71.58565, "incident": 10054},
+								  {"name": "Wandsworth", "size": 2390, "pred": 76.94236, "incident": 11465},
+								  {"name": "Westminster", "size": 3663, "pred": 86.00252, "incident": 27590}
+								 ]
+								},
+								{
+								 "name": "",
+								 "size": 405,
+								 "children": [
+								  {"name": "Not geo-coded", "pred": 71.26761, "size": 405,"incident": 1924}
+								 ]
+								}
+							  ]
+							};
+					
+			var data_property = {
+								 "name": "",
+								 "size": 77572,
+								 "children": [
+								  {"name": "Aircraft", "size": 15, "pred": 95.45455, "incident": 311},
+								  {"name": "Boat", "size": 45, "pred": 88.37209, "incident": 217},
+								  {"name": "Dwelling", "size": 22828, "pred": 86.30582, "incident": 171222},
+								  {"name": "Non Residential", "size": 7994, "pred": 89.87098, "incident": 92019},
+								  {"name": "Other Residential", "size": 1590, "pred": 93.62823, "incident": 23150},
+								  {"name": "Outdoor", "size": 17857, "pred": 61.70405, "incident": 32750},
+								  {"name": "Outdoor Structure", "size": 19768, "pred": 81.41941, "incident": 24399},
+								  {"name": "Rail Vehicle", "size": 53, "pred": 90.76923, "incident": 336},
+								  {"name": "Road Vehicle", "size": 7422, "pred": 76.07751, "incident": 29919}  
+								 ]
+							};
+			
+			var chart = pack();
+
+			function showPackLayout(data) {
+				chart.data(data).render();
+
+			}
+			
+			function pack() {
+				var _chart = {};
+
+				var _width = window.innerHeight/1.4, _height = window.innerHeight/1.4,
+					  _svg,
+					  _r = _width,
+					  _x = d3.scale.linear().range([0, _r]),
+					  _y = d3.scale.linear().range([0, _r]),
+					  _data,
+					  _bodyG,
+					  tip;
+
+				var zoomBehavior = d3.behavior.zoom()
+					  .scaleExtent([1, 4])
+					  .translate([0,0])
+				
+				_chart.render = function () {
+					if (!_svg) {
+						_svg = d3.select("#Pack").append("svg")
+								.attr("width", _width+30)
+								.attr("height", _height)
+								.call(zoomBehavior.on("zoom", redraw))
+
+						tip = d3.tip()
+								.attr('class', 'd3-tip')
+								.offset([-10, 0])
+								.html(function(d) {
+									  return "<strong><span style='color:#209ADC'>" + d.name + "</span></strong><br>Total number of Incidents: " + d.incident + "<br>Total number of Fires: " + d.size + "<br>Prediction level: " + d.pred +" %";
+								})
+						
+						_svg.call(tip);
+					}
+
+					renderBody(_svg);
+				};
+				
+				function redraw() {
+					_bodyG.attr("transform","translate(" + d3.event.translate + ")"+ " scale(" + d3.event.scale + ")");
+				}
+				
+				function renderBody(svg) {	
+
+					if (!_bodyG) {
+						_bodyg = svg.append("g")
+								.attr("transform", function (d) {
+									return "translate(" + (_width - _r) / 2 + "," + (_height - _r) / 2 + ")";
+								 });
+					}
+
+					var pack = d3.layout.pack()
+						.size([_r, _r])
+						.sort(null)
+						.padding(10)
+						.value(function(d) {return d.size;});
+
+					var data = pack.nodes(_data);	
+
+					renderCircles(data);
+					renderLabels(data);
+				}
+				
+				function renderCircles(data) {
+						var circles = _bodyg.selectAll("circle")
+							.data(data)
+							.attr("rInit", function(d, i) { return d.r })
+						
+						circles.enter().append("svg:circle")
+							.attr("id", function(d, i) { return "c" + i; })
+							.attr("rInit", function(d, i) { return d.r })
+							.on('mouseover', function(d,i) {
+								if((d.depth===2  && _data===data_borough) || (d.depth===1 && _data===data_property)) {
+									tip.show(d);
+									var selectedCircle = d3.select("#c" +i)
+									selectedCircle.transition().duration(250)
+									.attr("r", selectedCircle.attr("rInit")*1.2);
+								}
+							})
+							.on('mouseout', function(d,i) {
+								if((d.depth===2 && _data===data_borough) || (d.depth===1 && _data===data_property)) {
+									tip.hide(d);
+									var selectedCircle = d3.select("#c" +i)
+									selectedCircle.transition()
+									.attr("r", selectedCircle.attr("rInit"));
+								}
+							});
+
+						// Update
+						circles.transition()
+							.attr("r", 0)
+							.attr("class", function (d) {
+							  return d.children ? "parent" : "child";
+							})
+							.transition()
+							.duration(function (d, i) {
+							  return 300;
+							})
+							.delay(function (d, i) {
+							  return i * 30;
+							})
+							.attr("cx", function (d) {return d.x;})
+							.attr("cy", function (d) {return d.y;})
+							.attr("r", function (d) {return d.r;});
+
+						// Exit
+						circles.exit()
+							.remove();
+					}
+
+					function renderLabels(data) {
+
+						var labels = _bodyg.selectAll("text")
+										.data(data);
+
+						labels.enter().append("svg:text")
+							.attr("text-anchor", "middle")
+
+						labels.style("opacity", 100)
+							.attr("class", function (d) {
+							  return d.children ? "parent" : "child";
+							})
+							.style("font-size", function(d) {
+							  return d.children ? "27px" : "10px";
+							})
+
+							.transition()
+							.duration(function (d, i) {
+							  return 500;
+							})
+							.delay(function (d, i) {
+							  return 1000 + (i * 40);
+							})
+							.attr("x", function (d) {return d.x;})
+							.attr("y", function (d) {return d.y;})
+
+							.text(function (d) {
+							  return d.name;
+							});
+
+						labels.exit()
+							.remove();
+
+					}
+
+					_chart.width = function (w) {
+						if (!arguments.length) return _width;
+						_width = w;
+						return _chart;
+					};
+
+					_chart.height = function (h) {
+						if (!arguments.length) return _height;
+						_height = h;
+						return _chart;
+					};
+
+					_chart.r = function (r) {
+						if (!arguments.length) return _r;
+						_r = r;
+						return _chart;
+					};
+
+					_chart.data = function (n) {
+						if (!arguments.length) return _data;
+						_data = n;
+						return _chart;
+					};
+
+					return _chart;
+				}
+			
+		</script>
+		
+	</body>
+
+</html>
