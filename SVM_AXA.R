@@ -2,9 +2,7 @@
 library(e1071)
 
 # Load the data from the csv file
-dataDirectory <- "H:/Ing 3 - Heriot Watt/test_Axa/LFB incident data 1 Jan 2009 to 31 Aug 2015/"
-
-# read the data
+dataDirectory <- "H:/Ing 3 - Heriot Watt/test_Axa/Competition_Challenge_Axa"
 data <- read.csv(paste(dataDirectory, 'MyData.csv', sep=""), header = TRUE, sep=";")
 
 # generate the unique vector without duplicates containing all the Borough names 
